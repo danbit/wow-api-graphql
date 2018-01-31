@@ -27,3 +27,4 @@ The server will run on port 3000.
 ## Credits
 
 + Template for Express: https://github.com/tomyitav/express-es6-starter
++ Official WoW API (Blizzard): https://dev.battle.net
