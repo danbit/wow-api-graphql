@@ -24,6 +24,10 @@ npm start
 
 The server will run on port 3000.
 
+## Graphiql IDE
+
+Go to http://localhost:3000/graphql
+
 ## Credits
 
 + Template for Express: https://github.com/tomyitav/express-es6-starter
