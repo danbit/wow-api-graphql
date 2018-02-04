@@ -1,3 +1,5 @@
+import { getSpell } from './bnet-api'
+
 const {
   GraphQLObjectType,
   GraphQLString,
@@ -7,46 +9,18 @@ const {
   GraphQLNonNull
 } = require('graphql');
 
-const spells = [{
-    id: 1,
-    name: "Word of Recall (OLD)",
-    icon: "trade_engineering",
-    description: "",
-    powerCost: "10 Mana",
-    castTime: "10 sec cast"
-  },
-  {
-    id: 3,
-    name: "Word of Mass Recall (OLD)",
-    icon: "trade_engineering",
-    description: "",
-    powerCost: "10 Mana",
-    castTime: "20 sec cast"
-  },
-  {
-    id: 4,
-    name: "Word of Recall Other",
-    icon: "trade_engineering",
-    description: "",
-    powerCost: "10 Mana",
-    castTime: "Instant"
-  },
-  {
-    id: 5,
-    name: "Death Touch",
-    icon: "inv_misc_bone_humanskull_01",
-    description: "Instantly Kills the target.  I hope you feel good about yourself now.....",
-    range: "50,000 yd range",
-    castTime: "Instant"
-  },
-  {
-    id: 7,
-    name: "Suicide",
-    icon: "spell_shadow_lifedrain",
-    description: "The caster commits suicide, instantly killing themself.",
-    castTime: "Instant"
-  }
-]
+const APIOptionsType = new GraphQLObjectType({
+  name: 'APIOptions',
+  description: 'API Options',
+  fields: () => ({
+    origin: {
+      type: GraphQLString
+    },
+    locale: {
+      type: GraphQLString
+    },    
+  })
+})
 
 // Spell Type
 const SpellType = new GraphQLObjectType({
@@ -70,6 +44,9 @@ const SpellType = new GraphQLObjectType({
     castTime: {
       type: GraphQLString
     },
+    apiOptions: {
+      type: APIOptionsType
+    }
   })
 })
 
@@ -81,22 +58,17 @@ const RootQuery = new GraphQLObjectType({
       type: SpellType,
       args: {
         id: {
-          type: GraphQLInt
+          type: new GraphQLNonNull(GraphQLInt)
+        },
+        origin: {
+          type: GraphQLString
+        },
+        locale: {
+          type: GraphQLString
         }
       },
-      resolve(parentValue, args) {
-        for(let i = 0;i < spells.length;i++){
-            if(spells[i].id === args.id){
-                return spells[i];
-            }
-        }        
-        return null
-      }
-    },
-    spells: {
-      type: new GraphQLList(SpellType),
-      resolve(parentValue, args) {
-        return spells
+      resolve(parentValue, args) {          
+        return getSpell(args)
       }
     }
   }
